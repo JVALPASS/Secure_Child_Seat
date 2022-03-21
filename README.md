@@ -5,6 +5,7 @@ The application is composed by 5 functions:
 sensor.js: that emulates two sensors:
   1 weight sensor to detect if the child is on the seat or not. And this informations is send to an AMPQ Topic “iot/seat” with routing key “iot.weight”
   2 magnet sensor to detect if the child is on the seat or not. And this informations is send to an AMPQ Topic “iot/seat” with routing key “iot.magnet”
+For more information see: [About](#about)
 
 
 
