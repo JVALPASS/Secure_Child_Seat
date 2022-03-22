@@ -116,3 +116,5 @@ spec:
   version: 1
 ```
 </br>
+For deploying the function you can access, from the Nuclio dashboard, to the project IOT and create new function. When the system ask to create new function you have to select the import form yaml, and load the file "iot/receiverweight.yaml". At this point the dashboard show you the function IDE where it is needed to deploy on the system the function pressing the button "Deploy".
+Remeber that we have to change with our IP in the url of yaml file
