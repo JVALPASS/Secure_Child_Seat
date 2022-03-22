@@ -274,11 +274,7 @@ function sendAlert(){
     console.log(" [x] Sent %s:'%s'", key, msg);
     channel.publish(exchange, key, Buffer.from(msg));
   });
-
-  /*setTimeout(function() {
-    connection.close();
-    process.exit(0)
-  }, 500);*/
 });
 }
 ```
+</br>
