@@ -48,4 +48,23 @@ Compose is a tool for defining and running multi-container Docker applications. 
 
 **TIP** Docker compose is the technology used by Nuclio to easily create, build and deploy Docker application containers (the functions in this case).
 
-Install Docker Compose using the Docker Compose installation guide.
+Install Docker Compose using the Docker Compose installation [guide](https://docs.docker.com/compose/install/#install-compose).
+```
+$ sudo curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+$ sudo chmod +x /usr/local/bin/docker-compose
+```
+## Nuclio
+Nuclio (High-Performance Serverless event and data processing platform) is a new "serverless" project, derived from Iguazio's elastic data life-cycle management service for high-performance events and data processing. The simplest way to explore Nuclio is to run its graphical user interface (GUI) of the Nuclio dashboard.
+**TIP** The Nuclio documentation is available at this [link].
+
+Start [Nuclio](https://github.com/nuclio/nuclio) using a docker container.
+```
+$ docker run -p 8070:8070 -v /var/run/docker.sock:/var/run/docker.sock -v /tmp:/tmp nuclio/dashboard:stable-amd64
+```
+## RabbitMQ
+RabbitMQ is lightweight and easy to deploy on premises and in the cloud. It supports multiple messaging protocols. RabbitMQ can be deployed in distributed and federated configurations to meet high-scale, high-availability requirements.
+
+Start [RabbitMQ](https://www.rabbitmq.com/) instance with MQTT enabled using docker.
+```
+$ docker run -p 9000:15672  -p 1883:1883 -p 5672:5672  cyrilix/rabbitmq-mqtt 
+```
