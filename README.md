@@ -9,7 +9,7 @@ The application is composed by 5 functions:<br/>
 - [receiverweight.yaml](#ReceiverWeightFunction) that is a Nuclio Function that is triggered when a magnet information is published by the sensors with the Exchange Topic “iot/seat”, and routing key “iot.magnet”, it will send the message received by the sensor, about if the magnet is connected or not, to the node that will rise the alarm with routing key “belt.magnet” with an Exchange Topic “iot/belt”.
 - [clientDevice.js](##CallAlarm) The subscriber will consume the message about the weight with routing key “belt.weight”
 After the subscriber will bind to the queue with routing key “belt.magnet”, but only after receive a message about the weight, and after five seconds that does not receive a message from the magnet, it unbind from the queue, in this way we consume only fresh information.
-- [alarm.yaml](##Alarm) Nuclio function that will be triggered when a new message is published with Topic “iot/trigger” with routing key “iot.alarm”, and the message received will be send trough IFTTT application as SMS to the smartphone of user.<br/>
+- [alarm.yaml](##Alarm) Nuclio function that will be triggered when a new message is published with Topic “iot/trigger” with routing key “iot.alarm”, and the message received will be send trough IFTTT service as SMS to the smartphone of user.<br/>
 ## Prerequisites
 * OS:
     * Ubuntu 18.04 LTS or more recent
