@@ -72,8 +72,8 @@ $ docker run -p 9000:15672  -p 1883:1883 -p 5672:5672  cyrilix/rabbitmq-mqtt
 Create an [IFTT](https://ifttt.com/) account.
 Then you need to create a new Applet:</br>
 - Set this name to Event Name: **"Magnet disconnected"**
-- Use WebHooks in **if** **"receive a web request with a JSON paylod"** section:</br>
+- Use WebHooks in **if** and select **"receive a web request with a JSON paylod"** section:</br>
 <img src="https://github.com/JVALPASS/Secure_Child_Seat/blob/main/assets/webhooks.png" width="500" height="300">
-- Use **"SMS"** in **then** section:</br>
+- Select SMS in **then** :</br>
 <img src="https://github.com/JVALPASS/Secure_Child_Seat/blob/main/assets/overviewWebhooks.png" width="500" height="300">
 
