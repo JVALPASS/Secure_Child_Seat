@@ -200,6 +200,49 @@ spec:
 For deploying the function you can access, from the Nuclio dashboard, to the project IOT and create new function. When the system ask to create new function you have to select the import form yaml, and load the file "iot/alarm.yaml". At this point the dashboard show you the function IDE where it is needed to deploy on the system the function pressing the button "Deploy".
 Remeber that we have to change with your IP in the url of yaml file</br>
 
+## Sensors
+The Sensors Function is written in pure JavaScript and exploits the amqplib JavaScript library to communicate on the "iot/seat" queue. And send any 5 seconds a message for routing key "iot.weight", to send a new weight value, and a message for routing key "iot.magnet" to send a new magnet value.
+```
+#!/usr/bin/env node
+
+var amqp = require('amqplib/callback_api');
+function sensor(){
+	amqp.connect('amqp://guest:guest@192.168.1.16:5672', function(error0, connection) {
+	  if (error0) {
+	    throw error0;
+	  }
+	  connection.createChannel(function(error1, channel) {
+	    if (error1) {
+	      throw error1;
+	    }
+	    var exchange = 'iot/seat';
+	    var key1 = 'iot.weight';
+	    var key2 = 'iot.magnet';
+	    min = Math.ceil(100);
+	    max = Math.floor(2000);
+	    var msg1 = (Math.floor(Math.random() * (max - min + 1) + min)).toString();
+	    var msg2 = (Boolean(Math.round(Math.random()))).toString();
+
+	    channel.assertExchange(exchange, 'topic', {
+	      durable: false
+	    });
+	    console.log(" [x] Sent %s:'%s'", key1, msg1);
+	    channel.publish(exchange, key1, Buffer.from(msg1));
+	    setTimeout(function() {
+	       console.log(" [x] Sent %s:'%s'", key2, msg2);
+	       channel.publish(exchange, key2, Buffer.from(msg2));
+            }, 1000);
+	  });
+	  setTimeout(sensor, 5000);
+
+	  /*setTimeout(function() {
+	    connection.close();
+	    process.exit(0)
+	  }, 500);*/
+	});
+}
+sensor();
+```
 ## ClientDevice
 The IoT Client could be written in any language for any platform that support the AMQP protocol. In particular this JavaScript code consume the magnet (routing key = "iot.magnet") and weight (routing key = "iot.weight") data over the queue "iot/belt" and send an alarm message over the queue = “iot/trigger” with routing key “iot.alarm” to trigger the IFTTT service for the sending of message.</br>
 ```
