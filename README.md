@@ -75,5 +75,6 @@ Then you need to create a new Applet:</br>
 - Use WebHooks in **if** and select **"receive a web request with a JSON paylod"** section:</br>
 <img src="https://github.com/JVALPASS/Secure_Child_Seat/blob/main/assets/webhooks.png" width="500" height="300"></br>
 - Select **"SMS"** in **then** :</br>
-<img src="https://github.com/JVALPASS/Secure_Child_Seat/blob/main/assets/overviewWebhooks.png" width="500" height="350">
-
+<img src="https://github.com/JVALPASS/Secure_Child_Seat/blob/main/assets/overviewWebhooks.png" width="500" height="350"></br>
+- Set the parameter in the SMS:</br>
+<img src="https://github.com/JVALPASS/Secure_Child_Seat/blob/main/assets/smsWebhooks.png" width="500" height="350"></br>
