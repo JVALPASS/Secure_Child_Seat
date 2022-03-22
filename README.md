@@ -1,4 +1,4 @@
-# Seure Child Car Seat
+## Seure Child Car Seat
 Seure_Child_Car_Seat is a project that wants to show the potential of the IoT and the Serverless approach for make our lives easier, putting putting children's lives in safety.
 So in particualar the system alert with an SMS the parents when the child is on the seat, but the belt is not attached.<br/>
 The application is composed by 5 functions:<br/>
@@ -11,9 +11,33 @@ The application is composed by 5 functions:<br/>
 The subscriber will bind to the queue with routing key “belt.magnet” only after receive a message about the weight
 After five seconds that does not receive a message from the magnet, it unbind from the queue, in this way we consume only fresh information.
 - [alarm.yaml](##Alarm) Nuclio function that will be triggered when a new message is published with Topic “iot/trigger” with routing key “iot.alarm”, and the message received will be send trough IFTTT application as SMS to the smartphone of user.<br/>
-# Prerequisites
-* OS
-    * Ubuntu 18.04 LTS or more
+## Prerequisites
+* OS:
+    * Ubuntu 18.04 LTS or more recent
+* Software:
+    * Docker and Docker Compose (Application containers engine)
+    * Nuclio (Serverless computing provider)
+    * RabbitMQ (AMQP and MQTT message broker)
+    * Node.js
+## Installation
+This project is made on top of one local machine an Linux Ubuntu ? LTS machine.
+## Docker
+Docker is a tool designed to make it easier to create, deploy, and run applications by using containers.
+**Install Docker using the Docker CE installation [GUIDE](https://docs.docker.com/engine/install/ubuntu/).**
+`$ sudo apt-get update
+$ sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+$ sudo apt-key fingerprint 0EBFCD88
+$ sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+$ sudo apt-get update
+$ sudo apt-get install docker-ce`
 
 
 
