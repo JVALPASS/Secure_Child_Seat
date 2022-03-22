@@ -157,4 +157,43 @@ spec:
 ```
 </br>
 For deploying the function you can access, from the Nuclio dashboard, to the project IOT and create new function. When the system ask to create new function you have to select the import form yaml, and load the file "iot/receivermagnet.yaml". At this point the dashboard show you the function IDE where it is needed to deploy on the system the function pressing the button "Deploy".
+Remeber that we have to change with your IP in the url of yaml file</br>
+## Alarm
+The Alarm Function Function is written in pure JavaScript and exploits the amqplib JavaScript library to communicate on the "iot/trigger" queue. The function is deployed using the Docker compose specifics for Nuclio. This is achieved by define a new yaml file that declares all functions specifications and source code. The source code of the function (the JavaScript code) is encoded in base64 and copied in the attribute "functionSourceCode", moreover, is defined a new trigger on the amqp protocol that allows to automatically invoke the function when a new message is coming on the queue "iot/trigger" for the routing key “iot.alarm”. Since the functions exploits the amqplib in the "commands" attribute is added the command to install on Node.js the amqplib (npm install amqplib), and we have also add the command to install on Node.js 'npm install request', because the code make an HTTPS request to call an event on IFTTT.
+```
+metadata:
+  name: receivermagnet
+  labels:
+    nuclio.io/project-name: 7830d63b-24ec-40ec-8688-0dfa91e031cc
+spec:
+  handler: "main:handler"
+  runtime: nodejs
+  resources: {}
+  image: "nuclio/processor-receivermagnet:latest"
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPU: 75
+  triggers:
+    TriggerMagnet:
+      class: ""
+      kind: rabbit-mq
+      url: "amqp://guest:guest@192.168.1.16:5672"
+      attributes:
+        exchangeName: iot/seat
+        queueName: queueData
+        topics:
+          - iot.magnet
+  build:
+    functionSourceCode: dmFyIGFtcXAgPSByZXF1aXJlKCdhbXFwbGliJyk7DQp2YXIgYW1xcDIgPSByZXF1aXJlKCdhbXFwbGliL2NhbGxiYWNrX2FwaScpOw0KICAgICAgICB2YXIgRlVOQ1RJT05fTkFNRSA9ICJyZWNlaXZlcm1hZ25ldCI7DQogICAgICAgIGZ1bmN0aW9uIHNlbmRfbWVzc2FnZShtc2cscm91dGluZ19rZXkpew0KICAgICAgICAgICAgYW1xcDIuY29ubmVjdCgnYW1xcDovL2d1ZXN0Omd1ZXN0QDE5Mi4xNjguMS4xNjo1NjcyJywgZnVuY3Rpb24oZXJyb3IwLCBjb25uZWN0aW9uKSB7DQogICAgICAgICAgICAgICAgaWYgKGVycm9yMCkgew0KICAgICAgICAgICAgICAgICAgICB0aHJvdyBlcnJvcjA7DQogICAgICAgICAgICAgICAgfQ0KICAgICAgICAgICAgICAgIGNvbm5lY3Rpb24uY3JlYXRlQ2hhbm5lbChmdW5jdGlvbihlcnJvcjEsIGNoYW5uZWwpIHsNCiAgICAgICAgICAgICAgICAgICAgaWYgKGVycm9yMSkgew0KICAgICAgICAgICAgICAgICAgICB0aHJvdyBlcnJvcjE7DQogICAgICAgICAgICAgICAgICAgIH0NCiAgICAgICAgICAgICAgICAgICAgdmFyIGV4Y2hhbmdlID0gJ2lvdC9iZWx0JzsNCiAgICAgICAgICAgICAgICAgICAgdmFyIGtleSA9IHJvdXRpbmdfa2V5Ow0KICAgICAgICAgICAgICAgICAgICANCiAgICAgICAgICAgICAgICAgICAgY2hhbm5lbC5hc3NlcnRFeGNoYW5nZShleGNoYW5nZSwgJ3RvcGljJywgew0KICAgICAgICAgICAgICAgICAgICBkdXJhYmxlOiBmYWxzZQ0KICAgICAgICAgICAgICAgICAgICB9KTsNCiAgICAgICAgICAgICAgICAgICAgY2hhbm5lbC5wdWJsaXNoKGV4Y2hhbmdlLCBrZXksIEJ1ZmZlci5mcm9tKG1zZykpOw0KICAgICAgICAgICAgICAgIH0pOw0KICAgICAgICAgICAgfSk7DQogICAgICAgIH0NCiAgICAgICAgZnVuY3Rpb24gYmluMnN0cmluZyhhcnJheSl7DQogICAgICAgICAgdmFyIHJlc3VsdCA9ICIiOw0KICAgICAgICAgIGZvcih2YXIgaSA9IDA7IGkgPCBhcnJheS5sZW5ndGg7ICsraSl7DQogICAgICAgICAgICByZXN1bHQrPSAoU3RyaW5nLmZyb21DaGFyQ29kZShhcnJheVtpXSkpOw0KICAgICAgICAgIH0NCiAgICAgICAgICByZXR1cm4gcmVzdWx0Ow0KICAgICAgICB9DQoNCiAgICAgICAgZXhwb3J0cy5oYW5kbGVyID0gZnVuY3Rpb24oY29udGV4dCwgZXZlbnQpIHsNCiAgICAgICAgICAgIHZhciBfZXZlbnQgPSBKU09OLnBhcnNlKEpTT04uc3RyaW5naWZ5KGV2ZW50KSk7DQogICAgICAgICAgICB2YXIgX2RhdGEgPSBiaW4yc3RyaW5nKF9ldmVudC5ib2R5LmRhdGEpOw0KDQogICAgICAgICAgICBjb250ZXh0LmNhbGxiYWNrKCJmZWVkYmFjayAiK19kYXRhKTsNCg0KICAgICAgICAgICAgY29uc29sZS5sb2coIlRSSUdHRVIgIitfZGF0YSk7DQogICAgICAgICAgICBzZW5kX21lc3NhZ2UoX2RhdGEsJ2JlbHQubWFnbmV0Jyk7DQogICAgICAgIH07
+    commands:
+      - 'npm install amqplib'
+    runtimeAttributes:
+      repositories: []
+    codeEntryType: sourceCode
+  platform: {}
+  readinessTimeoutSeconds: 60
+  version: 1
+```
+</br>
+For deploying the function you can access, from the Nuclio dashboard, to the project IOT and create new function. When the system ask to create new function you have to select the import form yaml, and load the file "iot/alarm.yaml". At this point the dashboard show you the function IDE where it is needed to deploy on the system the function pressing the button "Deploy".
 Remeber that we have to change with your IP in the url of yaml file
