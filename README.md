@@ -199,6 +199,7 @@ spec:
 </br>
 For deploying the function you can access, from the Nuclio dashboard, to the project IOT and create new function. When the system ask to create new function you have to select the import form yaml, and load the file "iot/alarm.yaml". At this point the dashboard show you the function IDE where it is needed to deploy on the system the function pressing the button "Deploy".
 Remeber that we have to change with your IP in the url of yaml file</br>
+
 ##ClientDevice
 The IoT Client could be written in any language for any platform that support the AMQP protocol. In particular this JavaScript code consume the magnet (routing key = "iot.magnet") and weight (routing key = "iot.weight") data over the queue "iot/belt" and send an alarm message over the queue = “iot/trigger” with routing key “iot.alarm” to trigger the IFTTT service for the sending of message.</br>
 ```
