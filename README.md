@@ -7,9 +7,9 @@ The application is composed by 5 functions:<br/>
     2. magnet sensor to detect if the child is on the seat or not. And this informations is send to an AMPQ Topic “iot/seat” with routing key “iot.magnet”
 - [receivermagnet.yaml](#ReceiverMagnetFunction) that is a Nuclio Function that is triggered when a weight is published by the sensors with the Exchange Topic “iot/seat”, and    routing key “iot.weight”, it will filter and send only the weight over 1kg to the node that will rise the alarm, with routing key “belt.weight” with an Exchange Topic “iot/belt”.
 - [receiverweight.yaml](#ReceiverWeightFunction) that is a Nuclio Function that is triggered when a magnet information is published by the sensors with the Exchange Topic “iot/seat”, and routing key “iot.magnet”, it will send the message received by the sensor, about if the magnet is connected or not, to the node that will rise the alarm with routing key “belt.magnet” with an Exchange Topic “iot/belt”.
-- [clientDevice.js](##CallAlarm) The subscriber will consume the message about the weight with routing key “belt.weight”
-After the subscriber will bind to the queue with routing key “belt.magnet”, but only after receive a message about the weight, and after five seconds that does not receive a message from the magnet, it unbind from the queue, in this way we consume only fresh information.
-- [alarm.yaml](##Alarm) Nuclio function that will be triggered when a new message is published with Topic “iot/trigger” with routing key “iot.alarm”, and the message received will trigger an IFTTT service to send thtis message as SMS to the smartphone of user.<br/>
+- [clientDevice.js](#ClientDevice) The subscriber will consume the message about the weight over the queue "iot/belt" with routing key “belt.weight”
+After the subscriber will bind to the queue with routing key “belt.magnet”, but only after receive a message about the weight, and after five seconds that does not receive a message from the magnet, it unbind from the queue, in this way we consume only fresh information. This function send an alarm message over the queue = “iot/trigger” with routing key “iot.alarm” if it has received a weight and magnet is disconnected.
+- [alarm.yaml](#Alarm) Nuclio function that will be triggered when a new message is published with Topic “iot/trigger” with routing key “iot.alarm”, and the message received will trigger an IFTTT service to send thtis message as SMS to the smartphone of user.<br/>
 ## Prerequisites
 * OS:
     * Ubuntu 18.04 LTS or more recent
@@ -198,4 +198,87 @@ spec:
 ```
 </br>
 For deploying the function you can access, from the Nuclio dashboard, to the project IOT and create new function. When the system ask to create new function you have to select the import form yaml, and load the file "iot/alarm.yaml". At this point the dashboard show you the function IDE where it is needed to deploy on the system the function pressing the button "Deploy".
-Remeber that we have to change with your IP in the url of yaml file
+Remeber that we have to change with your IP in the url of yaml file</br>
+##ClientDevice
+The IoT Client could be written in any language for any platform that support the AMQP protocol. In particular this JavaScript code consume the magnet (routing key = "iot.magnet") and weight (routing key = "iot.weight") data over the queue "iot/belt" and send an alarm message over the queue = “iot/trigger” with routing key “iot.alarm” to trigger the IFTTT service for the sending of message.</br>
+```
+#!/usr/bin/env node
+
+var amqp = require('amqplib/callback_api');
+
+amqp.connect('amqp://guest:guest@192.168.1.16:5672', function(error0, connection) {
+  if (error0) {
+    throw error0;
+  }
+  connection.createChannel(function(error1, channel) {
+    if (error1) {
+      throw error1;
+    }
+    var exchange = 'iot/belt';
+
+    channel.assertExchange(exchange, 'topic', {
+      durable: false
+    });
+
+    channel.assertQueue('', {
+      exclusive: true
+    }, function(error2, q) {
+      if (error2) {
+        throw error2;
+      }
+      console.log(' [*] Waiting for logs. To exit press CTRL+C');
+      key1 = 'belt.weight';
+      key2 = 'belt.magnet';
+      channel.bindQueue(q.queue, exchange, key1);
+
+      channel.consume(q.queue, function(msg) {
+      	console.log(" [x] %s:'%s'", msg.fields.routingKey, msg.content.toString());
+      	if(msg.fields.routingKey == 'belt.magnet'){
+      	     console.log(" [x] disconnetto belt.magnet");
+      	     if(msg.content!='true'){
+      	     	sendAlert();
+      	     }
+      	     channel.unbindQueue(q.queue, exchange, key2);
+      	}else /*if(msg.content>1000)*/{
+      	     console.log(" [x] connetto belt.magnet");
+             channel.bindQueue(q.queue, exchange, key2);
+             setTimeout(function() {//
+	         channel.unbindQueue(q.queue, exchange, key2);
+	         console.log(" [x] disconnetto belt.magnet");
+	     }, 5000);//
+        }
+      }, {
+        noAck: false
+      });
+    });
+  });
+});
+function sendAlert(){
+  console.log(' [x] alert');
+  amqp.connect('amqp://guest:guest@192.168.1.16:5672', function(error0, connection) {
+  if (error0) {
+    throw error0;
+  }
+  connection.createChannel(function(error1, channel) {
+    if (error1) {
+      throw error1;
+    }
+    var exchange = 'iot/trigger';
+    var args = process.argv.slice(2);
+    var key = 'iot.alarm';
+    var msg = 'ALARM!!!!!!!: CONNECT BELT';
+
+    channel.assertExchange(exchange, 'topic', {
+      durable: false
+    });
+    console.log(" [x] Sent %s:'%s'", key, msg);
+    channel.publish(exchange, key, Buffer.from(msg));
+  });
+
+  /*setTimeout(function() {
+    connection.close();
+    process.exit(0)
+  }, 500);*/
+});
+}
+```
