@@ -73,4 +73,3 @@ Create an [IFTT](https://ifttt.com/) account.
 Then you need to create a new Applet:<br/>
     * Set this name to Event Name: **"Magnet disconnected"**
     * Use WebHooks in **"if"** section:
-    ![Test Image 4](https://github.com/JVALPASS/Secure_Child_Seat/blob/main/assets/webhooks.png)
