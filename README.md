@@ -13,6 +13,8 @@ After five seconds that does not receive a message from the magnet, it unbind fr
 - [alarm.yaml](##Alarm) Nuclio function that will be triggered when a new message is published with Topic “iot/trigger” with routing key “iot.alarm”, and the message received will be send trough IFTTT application as SMS to the smartphone of user.<br/>
 # Prerequisites
 * OS
+    * Ubuntu 18.04 LTS or more
+
 
 
 
