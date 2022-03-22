@@ -10,6 +10,9 @@ The application is composed by 5 functions:<br/>
 - [callAlarm.js](##CallAlarm) The subscriber will consume the message about the weight with routing key “belt.weight”
 The subscriber will bind to the queue with routing key “belt.magnet” only after receive a message about the weight
 After five seconds that does not receive a message from the magnet, it unbind from the queue, in this way we consume only fresh information.
-- [alarm.yaml](##Alarm) Nuclio function that will be triggered when a new message is published with Topic “iot/trigger” with routing key “iot.alarm”, and the message received will be send trough IFTTT application as SMS to the smartphone of user.
+- [alarm.yaml](##Alarm) Nuclio function that will be triggered when a new message is published with Topic “iot/trigger” with routing key “iot.alarm”, and the message received will be send trough IFTTT application as SMS to the smartphone of user.<br/>
+# Prerequisites
+* OS
+
 
 
