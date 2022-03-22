@@ -242,6 +242,11 @@ function sensor(){
 }
 sensor();
 ```
+<br/>
+To run the function 
+```
+node alarm.js
+```
 ## ClientDevice
 The IoT Client could be written in any language for any platform that support the AMQP protocol. In particular this JavaScript code consume the magnet (routing key = "iot.magnet") and weight (routing key = "iot.weight") data over the Exchange_Topic "iot/belt" and send an alarm message over the Exchange_Topic “iot/trigger” with routing key “iot.alarm” to trigger the IFTTT service for the sending of message.</br>
 ```
@@ -319,5 +324,10 @@ function sendAlert(){
   });
 });
 }
+```
+</br>
+To run the function 
+```
+node clientDevice.js
 ```
 </br>
