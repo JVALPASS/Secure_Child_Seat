@@ -70,6 +70,6 @@ $ docker run -p 9000:15672  -p 1883:1883 -p 5672:5672  cyrilix/rabbitmq-mqtt
 ```
 # IFTTT MESSAGE TRIGGER
 Create an [IFTT](https://ifttt.com/) account.
-Then you need to create a new Applet:<br/>
+Then you need to create a new Applet:
     * Set this name to Event Name: **"Magnet disconnected"**
     * Use WebHooks in **"if"** section:
