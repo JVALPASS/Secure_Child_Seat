@@ -23,8 +23,8 @@ After five seconds that does not receive a message from the magnet, it unbind fr
 This project is made on top of one local machine an Linux Ubuntu ? LTS machine.
 ## Docker
 Docker is a tool designed to make it easier to create, deploy, and run applications by using containers.
-**Install Docker using the Docker CE installation [GUIDE](https://docs.docker.com/engine/install/ubuntu/).**
-`$ sudo apt-get update
+**Install Docker using the Docker CE installation [GUIDE](https://docs.docker.com/engine/install/ubuntu/).**<br/>
+```$ sudo apt-get update
 $ sudo apt-get install \
     apt-transport-https \
     ca-certificates \
@@ -37,7 +37,7 @@ $ sudo add-apt-repository \
    $(lsb_release -cs) \
    stable"
 $ sudo apt-get update
-$ sudo apt-get install docker-ce`
+$ sudo apt-get install docker-ce```
 
 
 
