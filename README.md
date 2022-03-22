@@ -1,15 +1,14 @@
 ## Seure Child Car Seat
-Seure_Child_Car_Seat is a project that wants to show the potential of the IoT and the Serverless approach for make our lives easier, putting putting children's lives in safety.
+Seure_Child_Car_Seat is a project that wants to show the potential of the IoT and the Serverless approach for make our lives easier, putting children's lives in safety.
 So in particualar the system alert with an SMS the parents when the child is on the seat, but the belt is not attached.<br/>
 The application is composed by 5 functions:<br/>
 - [sensor.js](##Sensors): that emulates two sensors:
-    1. weight sensor to detect if the child is on the seat or not. And this informations is send to an AMPQ Topic “iot/seat” with routing key “iot.weight”
-    2. magnet sensor to detect if the child is on the seat or not. And this informations is send to an AMPQ Topic “iot/seat” with routing key “iot.magnet”
-- [receivermagnet.yaml](#ReceiverMagnetFunction) that is a Nuclio Function that is triggered when a weight is published by the sensors with the Exchange Topic “iot/seat”, and    routing key “iot.weight”, it will filter and send only the weight over 1kg to the node that will rise the alarm, with routing key “belt.weight” with an Exchange Topic “iot/belt”.
-- [receiverweight.yaml](#ReceiverWeightFunction) that is a Nuclio Function that is triggered when a magnet information is published by the sensors with the Exchange Topic “iot/seat”, and routing key “iot.magnet”, it will send the message received by the sensor, about if the magnet is connected or not, to the node that will rise the alarm with routing key “belt.magnet” with an Exchange Topic “iot/belt”.
-- [clientDevice.js](#ClientDevice) The subscriber will consume the message about the weight over the queue "iot/belt" with routing key “belt.weight”
-After the subscriber will bind to the queue with routing key “belt.magnet”, but only after receive a message about the weight, and after five seconds that does not receive a message from the magnet, it unbind from the queue, in this way we consume only fresh information. This function send an alarm message over the queue = “iot/trigger” with routing key “iot.alarm” if it has received a weight and magnet is disconnected.
-- [alarm.yaml](#Alarm) Nuclio function that will be triggered when a new message is published with Topic “iot/trigger” with routing key “iot.alarm”, and the message received will trigger an IFTTT service to send thtis message as SMS to the smartphone of user.<br/>
+    1. weight sensor to detect if the child is on the seat or not. And this informations is send to an AMPQ Exchange_Topic “iot/seat” with routing key “iot.weight”
+    2. magnet sensor to detect if the child is on the seat or not. And this informations is send to an AMPQ Exchange_Topic “iot/seat” with routing key “iot.magnet”
+- [receivermagnet.yaml](#ReceiverMagnetFunction) that is a Nuclio Function that is triggered when a weight is published by the sensors with the Exchange Topic “iot/seat”, and routing key “iot.weight”, it will filter and send only the weight over 1kg to the Exchange_Topic "iot/belt" with routing key "belt.weight", so these data will be received by the ClientDevice that will rise the alarm.
+- [receiverweight.yaml](#ReceiverWeightFunction) that is a Nuclio Function that is triggered when a magnet information is published by the sensors with the Exchange_Topic “iot/seat”, and routing key “iot.magnet”, it will send the message received by the sensor, about if the magnet is connected or not, to the Exchange_Topic "iot/belt" with routing key "belt.magnet", so these data will be received by the ClientDevice that will rise the alarm.
+- [clientDevice.js](#ClientDevice) The subscriber will consume the message about the weight over the queue trough the Exchange_Topic "iot/belt" with routing key “belt.weight”, after this the subscriber will bind to the queue with routing key “belt.magnet”, and after five seconds if does not receive a message from the magnet, it unbind from the queue about the magnet, in this way we consume only fresh information. This function if has received a weight "over 1kg" and magnet "disconnected", send an alarm message to an Exchange_Topic = “iot/trigger” with routing key “iot.alarm”.
+- [alarm.yaml](#Alarm) Nuclio function that will be triggered when a new message is published with Exchange_Topic “iot/trigger” with routing key “iot.alarm”, and the message received will trigger an IFTTT service to send thtis message as SMS to the smartphone of user.<br/>
 ## Prerequisites
 * OS:
     * Ubuntu 18.04 LTS or more recent
@@ -80,7 +79,7 @@ Then you need to create a new Applet:</br>
 - Remember to connect the service:</br>
 <img src="https://github.com/JVALPASS/Secure_Child_Seat/blob/main/assets/resultsWebooks.png" width="500" height="350"></br>
 ## ReceiverWeightFunction
-The Receiver Weight Function Function is written in pure JavaScript and exploits the amqplib JavaScript library to communicate on the "iot/seat" queue. The function is deployed using the Docker compose specifics for Nuclio. This is achieved by define a new yaml file that declares all functions specifications and source code. The source code of the function (the JavaScript code) is encoded in base64 and copied in the attribute "functionSourceCode", moreover, is defined a new trigger on the amqp protocol that allows to automatically invoke the function when a new message is coming on the queue "iot/seat" for the routing key "iot.weight". Since the functions exploits the amqplib in the "commands" attribute is added the command to install on Node.js the amqplib (npm install amqplib).
+The Receiver Weight Function Function is written in pure JavaScript and exploits the amqplib JavaScript library to communicate on the "iot/seat" Exchange_Topic. The function is deployed using the Docker compose specifics for Nuclio. This is achieved by define a new yaml file that declares all functions specifications and source code. The source code of the function (the JavaScript code) is encoded in base64 and copied in the attribute "functionSourceCode", moreover, is defined a new trigger on the amqp protocol that allows to automatically invoke the function when a new message is coming on the Exchange_Topic "iot/seat" for the routing key "iot.weight". Since the functions exploits the amqplib in the "commands" attribute is added the command to install on Node.js the amqplib (npm install amqplib).
 ```
 metadata:
   name: receiverweight
@@ -120,7 +119,7 @@ For deploying the function you can access, from the Nuclio dashboard, to the pro
 Remeber that we have to change with your IP in the url of yaml file</br>
 
 ## ReceiverMagnetFunction
-The Receiver Magnet Function Function is written in pure JavaScript and exploits the amqplib JavaScript library to communicate on the "iot/seat" queue. The function is deployed using the Docker compose specifics for Nuclio. This is achieved by define a new yaml file that declares all functions specifications and source code. The source code of the function (the JavaScript code) is encoded in base64 and copied in the attribute "functionSourceCode", moreover, is defined a new trigger on the amqp protocol that allows to automatically invoke the function when a new message is coming on the queue "iot/seat" for the routing key "iot.magnet". Since the functions exploits the amqplib in the "commands" attribute is added the command to install on Node.js the amqplib (npm install amqplib).
+The Receiver Magnet Function Function is written in pure JavaScript and exploits the amqplib JavaScript library to communicate on the "iot/seat" Exchange_Topic. The function is deployed using the Docker compose specifics for Nuclio. This is achieved by define a new yaml file that declares all functions specifications and source code. The source code of the function (the JavaScript code) is encoded in base64 and copied in the attribute "functionSourceCode", moreover, is defined a new trigger on the amqp protocol that allows to automatically invoke the function when a new message is coming on the Exchange_Topic "iot/seat" for the routing key "iot.magnet". Since the functions exploits the amqplib in the "commands" attribute is added the command to install on Node.js the amqplib (npm install amqplib).
 ```
 metadata:
   name: receivermagnet
@@ -160,7 +159,7 @@ For deploying the function you can access, from the Nuclio dashboard, to the pro
 Remeber that we have to change with your IP in the url of yaml file</br>
 
 ## Alarm
-The Alarm Function Function is written in pure JavaScript and exploits the amqplib JavaScript library to communicate on the "iot/trigger" queue. The function is deployed using the Docker compose specifics for Nuclio. This is achieved by define a new yaml file that declares all functions specifications and source code. The source code of the function (the JavaScript code) is encoded in base64 and copied in the attribute "functionSourceCode", moreover, is defined a new trigger on the amqp protocol that allows to automatically invoke the function when a new message is coming on the queue "iot/trigger" for the routing key “iot.alarm”. Since the functions exploits the amqplib in the "commands" attribute is added the command to install on Node.js the amqplib (npm install amqplib), and we have also add the command to install on Node.js 'npm install request', because the code make an HTTPS request to call an event on IFTTT.
+The Alarm Function Function is written in pure JavaScript and exploits the amqplib JavaScript library to communicate on the "iot/trigger" queue. The function is deployed using the Docker compose specifics for Nuclio. This is achieved by define a new yaml file that declares all functions specifications and source code. The source code of the function (the JavaScript code) is encoded in base64 and copied in the attribute "functionSourceCode", moreover, is defined a new trigger on the amqp protocol that allows to automatically invoke the function when a new message is coming on the Exchange_Topic "iot/trigger" for the routing key “iot.alarm”. Since the functions exploits the amqplib in the "commands" attribute is added the command to install on Node.js the amqplib (npm install amqplib), and we have also add the command to install on Node.js 'npm install request', because the code make an HTTPS request to call an event on IFTTT.
 ```
 metadata:
   name: alarm
@@ -201,7 +200,7 @@ For deploying the function you can access, from the Nuclio dashboard, to the pro
 Remeber that we have to change with your IP in the url of yaml file</br>
 
 ## Sensors
-The Sensors Function is written in pure JavaScript and exploits the amqplib JavaScript library to communicate on the "iot/seat" queue. And send any 5 seconds a message for routing key "iot.weight", to send a new weight value, and a message for routing key "iot.magnet" to send a new magnet value.
+The Sensors Function is written in pure JavaScript and exploits the amqplib JavaScript library to communicate trough the Exchange_Topic "iot/seat". And send any 5 seconds a message for routing key "iot.weight", to send a new weight value, and a message for routing key "iot.magnet" to send a new magnet value.
 ```
 #!/usr/bin/env node
 
@@ -244,7 +243,7 @@ function sensor(){
 sensor();
 ```
 ## ClientDevice
-The IoT Client could be written in any language for any platform that support the AMQP protocol. In particular this JavaScript code consume the magnet (routing key = "iot.magnet") and weight (routing key = "iot.weight") data over the queue "iot/belt" and send an alarm message over the queue = “iot/trigger” with routing key “iot.alarm” to trigger the IFTTT service for the sending of message.</br>
+The IoT Client could be written in any language for any platform that support the AMQP protocol. In particular this JavaScript code consume the magnet (routing key = "iot.magnet") and weight (routing key = "iot.weight") data over the Exchange_Topic "iot/belt" and send an alarm message over the Exchange_Topic “iot/trigger” with routing key “iot.alarm” to trigger the IFTTT service for the sending of message.</br>
 ```
 #!/usr/bin/env node
 
