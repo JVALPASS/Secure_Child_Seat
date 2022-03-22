@@ -44,4 +44,8 @@ $ sudo apt-get install docker-ce
 $ sudo ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf
 ```
 ## Docker Compose
+Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application’s services.
 
+**TIP** Docker compose is the technology used by Nuclio to easily create, build and deploy Docker application containers (the functions in this case).
+
+Install Docker Compose using the Docker Compose installation guide.
