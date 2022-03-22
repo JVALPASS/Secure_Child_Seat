@@ -41,7 +41,7 @@ amqp.connect('amqp://guest:guest@192.168.1.16:5672', function(error0, connection
              setTimeout(function() {//
 	         channel.unbindQueue(q.queue, exchange, key2);
 	         console.log(" [x] disconnetto belt.magnet");
-	     }, 5000);//
+	     }, 6000);//
         }
       }, {
         noAck: false
