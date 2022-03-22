@@ -5,8 +5,4 @@ The application is composed by 5 functions:<br/>
 - [sensor.js](##sensors): that emulates two sensors:
     1. weight sensor to detect if the child is on the seat or not. And this informations is send to an AMPQ Topic “iot/seat” with routing key “iot.weight”
     2. magnet sensor to detect if the child is on the seat or not. And this informations is send to an AMPQ Topic “iot/seat” with routing key “iot.magnet”
-
-
-
-
-
+- [receivermagnet.yaml](##ReceiverMagnet) that is a Nuclio Function that is triggered when a weight is published by the sensors with the Exchange Topic “iot/seat”, and    routing key “iot.weight”
