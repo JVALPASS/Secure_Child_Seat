@@ -79,4 +79,4 @@ Then you need to create a new Applet:</br>
 - Set the parameter in the SMS:</br>
 <img src="https://github.com/JVALPASS/Secure_Child_Seat/blob/main/assets/smsWebhooks.png" width="500" height="350"></br>
 - Remember to connect the service:</br>
-<img src="https://github.com/JVALPASS/Secure_Child_Seat/blob/main/assets/resultsWebooks.png" width="500" height="500"></br>
+<img src="https://github.com/JVALPASS/Secure_Child_Seat/blob/main/assets/resultsWebooks.png" width="500" height="350"></br>
