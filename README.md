@@ -9,7 +9,7 @@ The application is composed by 5 functions:<br/>
 - [receiverweight.yaml](#ReceiverWeightFunction) that is a Nuclio Function that is triggered when a magnet information is published by the sensors with the Exchange Topic “iot/seat”, and routing key “iot.magnet”, it will send the message received by the sensor, about if the magnet is connected or not, to the node that will rise the alarm with routing key “belt.magnet” with an Exchange Topic “iot/belt”.
 - [clientDevice.js](##CallAlarm) The subscriber will consume the message about the weight with routing key “belt.weight”
 After the subscriber will bind to the queue with routing key “belt.magnet”, but only after receive a message about the weight, and after five seconds that does not receive a message from the magnet, it unbind from the queue, in this way we consume only fresh information.
-- [alarm.yaml](##Alarm) Nuclio function that will be triggered when a new message is published with Topic “iot/trigger” with routing key “iot.alarm”, and the message received will be send trough IFTTT service as SMS to the smartphone of user.<br/>
+- [alarm.yaml](##Alarm) Nuclio function that will be triggered when a new message is published with Topic “iot/trigger” with routing key “iot.alarm”, and the message received will trigger an IFTTT service to send thtis message as SMS to the smartphone of user.<br/>
 ## Prerequisites
 * OS:
     * Ubuntu 18.04 LTS or more recent
@@ -163,31 +163,32 @@ Remeber that we have to change with your IP in the url of yaml file</br>
 The Alarm Function Function is written in pure JavaScript and exploits the amqplib JavaScript library to communicate on the "iot/trigger" queue. The function is deployed using the Docker compose specifics for Nuclio. This is achieved by define a new yaml file that declares all functions specifications and source code. The source code of the function (the JavaScript code) is encoded in base64 and copied in the attribute "functionSourceCode", moreover, is defined a new trigger on the amqp protocol that allows to automatically invoke the function when a new message is coming on the queue "iot/trigger" for the routing key “iot.alarm”. Since the functions exploits the amqplib in the "commands" attribute is added the command to install on Node.js the amqplib (npm install amqplib), and we have also add the command to install on Node.js 'npm install request', because the code make an HTTPS request to call an event on IFTTT.
 ```
 metadata:
-  name: receivermagnet
+  name: alarm
   labels:
     nuclio.io/project-name: 7830d63b-24ec-40ec-8688-0dfa91e031cc
 spec:
   handler: "main:handler"
   runtime: nodejs
   resources: {}
-  image: "nuclio/processor-receivermagnet:latest"
+  image: "nuclio/processor-alarm:latest"
   minReplicas: 1
   maxReplicas: 1
   targetCPU: 75
   triggers:
-    TriggerMagnet:
+    TriggerAlarm:
       class: ""
       kind: rabbit-mq
       url: "amqp://guest:guest@192.168.1.16:5672"
       attributes:
-        exchangeName: iot/seat
-        queueName: queueData
+        exchangeName: iot/trigger
+        queueName: queueTrigger
         topics:
-          - iot.magnet
+          - iot.alarm
   build:
-    functionSourceCode: dmFyIGFtcXAgPSByZXF1aXJlKCdhbXFwbGliJyk7DQp2YXIgYW1xcDIgPSByZXF1aXJlKCdhbXFwbGliL2NhbGxiYWNrX2FwaScpOw0KICAgICAgICB2YXIgRlVOQ1RJT05fTkFNRSA9ICJyZWNlaXZlcm1hZ25ldCI7DQogICAgICAgIGZ1bmN0aW9uIHNlbmRfbWVzc2FnZShtc2cscm91dGluZ19rZXkpew0KICAgICAgICAgICAgYW1xcDIuY29ubmVjdCgnYW1xcDovL2d1ZXN0Omd1ZXN0QDE5Mi4xNjguMS4xNjo1NjcyJywgZnVuY3Rpb24oZXJyb3IwLCBjb25uZWN0aW9uKSB7DQogICAgICAgICAgICAgICAgaWYgKGVycm9yMCkgew0KICAgICAgICAgICAgICAgICAgICB0aHJvdyBlcnJvcjA7DQogICAgICAgICAgICAgICAgfQ0KICAgICAgICAgICAgICAgIGNvbm5lY3Rpb24uY3JlYXRlQ2hhbm5lbChmdW5jdGlvbihlcnJvcjEsIGNoYW5uZWwpIHsNCiAgICAgICAgICAgICAgICAgICAgaWYgKGVycm9yMSkgew0KICAgICAgICAgICAgICAgICAgICB0aHJvdyBlcnJvcjE7DQogICAgICAgICAgICAgICAgICAgIH0NCiAgICAgICAgICAgICAgICAgICAgdmFyIGV4Y2hhbmdlID0gJ2lvdC9iZWx0JzsNCiAgICAgICAgICAgICAgICAgICAgdmFyIGtleSA9IHJvdXRpbmdfa2V5Ow0KICAgICAgICAgICAgICAgICAgICANCiAgICAgICAgICAgICAgICAgICAgY2hhbm5lbC5hc3NlcnRFeGNoYW5nZShleGNoYW5nZSwgJ3RvcGljJywgew0KICAgICAgICAgICAgICAgICAgICBkdXJhYmxlOiBmYWxzZQ0KICAgICAgICAgICAgICAgICAgICB9KTsNCiAgICAgICAgICAgICAgICAgICAgY2hhbm5lbC5wdWJsaXNoKGV4Y2hhbmdlLCBrZXksIEJ1ZmZlci5mcm9tKG1zZykpOw0KICAgICAgICAgICAgICAgIH0pOw0KICAgICAgICAgICAgfSk7DQogICAgICAgIH0NCiAgICAgICAgZnVuY3Rpb24gYmluMnN0cmluZyhhcnJheSl7DQogICAgICAgICAgdmFyIHJlc3VsdCA9ICIiOw0KICAgICAgICAgIGZvcih2YXIgaSA9IDA7IGkgPCBhcnJheS5sZW5ndGg7ICsraSl7DQogICAgICAgICAgICByZXN1bHQrPSAoU3RyaW5nLmZyb21DaGFyQ29kZShhcnJheVtpXSkpOw0KICAgICAgICAgIH0NCiAgICAgICAgICByZXR1cm4gcmVzdWx0Ow0KICAgICAgICB9DQoNCiAgICAgICAgZXhwb3J0cy5oYW5kbGVyID0gZnVuY3Rpb24oY29udGV4dCwgZXZlbnQpIHsNCiAgICAgICAgICAgIHZhciBfZXZlbnQgPSBKU09OLnBhcnNlKEpTT04uc3RyaW5naWZ5KGV2ZW50KSk7DQogICAgICAgICAgICB2YXIgX2RhdGEgPSBiaW4yc3RyaW5nKF9ldmVudC5ib2R5LmRhdGEpOw0KDQogICAgICAgICAgICBjb250ZXh0LmNhbGxiYWNrKCJmZWVkYmFjayAiK19kYXRhKTsNCg0KICAgICAgICAgICAgY29uc29sZS5sb2coIlRSSUdHRVIgIitfZGF0YSk7DQogICAgICAgICAgICBzZW5kX21lc3NhZ2UoX2RhdGEsJ2JlbHQubWFnbmV0Jyk7DQogICAgICAgIH07
+    functionSourceCode: dmFyIHJlcXVlc3QgPSByZXF1aXJlKCdyZXF1ZXN0Jyk7DQpmdW5jdGlvbiBiaW4yc3RyaW5nKGFycmF5KXsNCiAgICB2YXIgcmVzdWx0ID0gIiI7DQogICAgZm9yKHZhciBpID0gMDsgaSA8IGFycmF5Lmxlbmd0aDsgKytpKXsNCiAgICAgICAgcmVzdWx0Kz0gKFN0cmluZy5mcm9tQ2hhckNvZGUoYXJyYXlbaV0pKTsNCiAgICB9DQogICAgcmV0dXJuIHJlc3VsdDsNCn0NCmV4cG9ydHMuaGFuZGxlciA9IGZ1bmN0aW9uKGNvbnRleHQsIGV2ZW50KSB7DQogICAgdmFyIF9ldmVudCA9IEpTT04ucGFyc2UoSlNPTi5zdHJpbmdpZnkoZXZlbnQpKTsNCiAgICB2YXIgX2RhdGEgPSBiaW4yc3RyaW5nKF9ldmVudC5ib2R5LmRhdGEpOw0KICAgIHJlcXVlc3QucG9zdCh7DQogICAgICAgIGhlYWRlcnM6eydDb250ZW50LVR5cGUnIDogJ2FwcGxpY2F0aW9uL2pzb24nfSwNCiAgICAgICAgdXJsOiAnaHR0cHM6Ly9tYWtlci5pZnR0dC5jb20vdHJpZ2dlci9tYWduZXRfZGlzY29ubmVjdGVkL2pzb24vd2l0aC9rZXkvbkl2c0RfaFNyRkFsSmtfNXRHMHVVbVY4OW9UN19vclIzZHI0NU1iT1B3NicsDQogICAgICAgIC8vYm9keTogJ3sidGhpcyI6W3siaXMiOnsic29tZSI6WyJ0ZXN0IiwiZGF0YSJdfX1dfScNCiAgICAgICAgYm9keTogSlNPTi5zdHJpbmdpZnkoW25ldyBTdHJpbmcoX2RhdGEpXSkNCiAgICAgICAgfSwgDQogICAgICAgIGZ1bmN0aW9uKGVycm9yLCByZXNwb25zZSwgYm9keSl7DQogICAgICAgICAgICAgICAgY29uc29sZS5sb2coYm9keSk7DQogICAgICAgIH0NCiAgICApOw0KICAgIGNvbnRleHQuY2FsbGJhY2soJ2ZlZWVkYmFjayBzZW5yIG1lc3NhZ2VzJyk7DQp9Ow==
     commands:
       - 'npm install amqplib'
+      - 'npm install request'
     runtimeAttributes:
       repositories: []
     codeEntryType: sourceCode
