@@ -10,7 +10,7 @@ The application is composed by 5 functions:<br/>
 - [clientDevice.js](#ClientDevice) The subscriber will consume the message about the weight over the queue trough the Exchange_Topic "iot/belt" with routing key “belt.weight”, after this the subscriber will bind to the queue with routing key “belt.magnet”, and after six seconds if does not receive a message from the magnet, it unbind from the queue about the magnet, in this way we consume only fresh information. This function if has received a weight "over 1kg" and magnet "disconnected", send an alarm message to an Exchange_Topic = “iot/trigger” with routing key “iot.alarm”.
 - [alarm.yaml](#Alarm) Nuclio function that will be triggered when a new message is published with Exchange_Topic “iot/trigger” with routing key “iot.alarm”, and the message received will trigger an IFTTT service to send thtis message as SMS to the smartphone of user.<br/>
 ## Architeture
-<img src="https://github.com/JVALPASS/Secure_Child_Seat/blob/main/assets/architetureserverless.png" width="500" height="350"></br>
+<img src="https://github.com/JVALPASS/Secure_Child_Seat/blob/main/assets/architetureserverless.png" width="700" height="400"></br>
 ## Prerequisites
 * OS:
     * Ubuntu 18.04 LTS or more recent
