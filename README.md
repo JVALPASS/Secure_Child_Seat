@@ -102,7 +102,7 @@ spec:
       url: "amqp://guest:guest@192.168.1.16:5672"
       attributes:
         exchangeName: iot/seat
-        queueName: queueData
+        queueName: iot/seat
         topics:
           - iot.weight
   build:
@@ -142,7 +142,7 @@ spec:
       url: "amqp://guest:guest@192.168.1.16:5672"
       attributes:
         exchangeName: iot/seat
-        queueName: queueData
+        queueName: iot/seat
         topics:
           - iot.magnet
   build:
@@ -182,7 +182,7 @@ spec:
       url: "amqp://guest:guest@192.168.1.16:5672"
       attributes:
         exchangeName: iot/trigger
-        queueName: queueTrigger
+        queueName: iot/trigger
         topics:
           - iot.alarm
   build:
