@@ -1,5 +1,5 @@
-## Seure Child Car Seat
-Seure_Child_Car_Seat is a project that wants to show the potential of the IoT and the Serverless approach for make our lives easier, putting children's lives in safety.
+## Secure Child Car Seat
+Secure_Child_Car_Seat is a project that wants to show the potential of the IoT and the Serverless approach for make our lives easier, putting children's lives in safety.
 So in particualar the system alert with an SMS the parents when the child is on the seat, but the belt is not attached.<br/>
 The application is composed by 5 functions:<br/>
 - [sensor.js](##Sensors): that emulates two sensors:
