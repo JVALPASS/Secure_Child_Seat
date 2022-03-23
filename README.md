@@ -18,7 +18,7 @@ The application is composed by 5 functions:<br/>
     * RabbitMQ (AMQP and MQTT message broker)
     * Node.js
 ## Installation
-This project is made on top of one local machine an Linux Ubuntu ? LTS machine.
+This project is made on top of one local machine an Linux Ubuntu 20.04 LTS LTS machine.
 ## Docker
 Docker is a tool designed to make it easier to create, deploy, and run applications by using containers.
 **Install Docker using the Docker CE installation [GUIDE](https://docs.docker.com/engine/install/ubuntu/).**<br/>
