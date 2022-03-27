@@ -1,7 +1,7 @@
 ## Installation
-To execute our application Iot Project first of all we have to install on our Ubuntu machine AMPQ library<br/>
+To execute our application Iot Project first of all we have to install on our Ubuntu machine MQTT library<br/>
 ```
-npm install amqp
+npm install mqtt
 ```
 ## Application
 The application is composed by 5 functions:<br/>
