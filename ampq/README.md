@@ -1,13 +1,13 @@
 ## Installation
-To execute our application Iot Project first of all we have to install on our Ubuntu machine AMPQ library<br/>
+To execute our application Iot Project first of all we have to install on our Ubuntu machine AMQP library<br/>
 ```
 npm install amqp
 ```
 ## Application
 The application is composed by 5 functions:<br/>
 - [sensor.js](##Sensors): that emulates two sensors:
-    1. weight sensor to detect if the child is on the seat or not. And this informations is send to an AMPQ Exchange_Topic “iot/seat” with routing key “iot.weight”
-    2. magnet sensor to detect if the child is on the seat or not. And this informations is send to an AMPQ Exchange_Topic “iot/seat” with routing key “iot.magnet”
+    1. weight sensor to detect if the child is on the seat or not. And this informations is send to an AMQP Exchange_Topic “iot/seat” with routing key “iot.weight”
+    2. magnet sensor to detect if the child is on the seat or not. And this informations is send to an AMQP Exchange_Topic “iot/seat” with routing key “iot.magnet”
 - [receiverweight.yaml](#ReceiverWeightFunction) that is a Nuclio Function that is triggered when a weight is published by the sensors with the Exchange Topic “iot/seat”, and routing key “iot.weight”, it will filter and send only the weight over 1kg to the Exchange_Topic "iot/belt" with routing key "belt.weight", so these data will be received by the ClientDevice that will rise the alarm.
 - [receivermagnet.yaml](#ReceiverMagnetFunction) that is a Nuclio Function that is triggered when a magnet information is published by the sensors with the Exchange_Topic “iot/seat”, and routing key “iot.magnet”, it will send the message received by the sensor, about if the magnet is connected or not, to the Exchange_Topic "iot/belt" with routing key "belt.magnet", so these data will be received by the ClientDevice that will rise the alarm.
 - [clientDevice.js](#ClientDevice) The subscriber will consume the message about the weight over the queue trough the Exchange_Topic "iot/belt" with routing key “belt.weight”, after this the subscriber will bind to the queue with routing key “belt.magnet”, and after six seconds if does not receive a message from the magnet, it unbind from the queue about the magnet, in this way we consume only fresh information. This function if has received a weight "over 1kg" and magnet "disconnected", send an alarm message to an Exchange_Topic = “iot/trigger” with routing key “iot.alarm”.
