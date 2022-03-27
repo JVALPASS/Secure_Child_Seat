@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var amqp = require('amqplib/callback_api');
-
+let timerId;
 amqp.connect('amqp://guest:guest@192.168.1.16:5672', function(error0, connection) {
   if (error0) {
     throw error0;
@@ -30,15 +30,16 @@ amqp.connect('amqp://guest:guest@192.168.1.16:5672', function(error0, connection
       channel.consume(q.queue, function(msg) {
       	console.log(" [x] %s:'%s'", msg.fields.routingKey, msg.content.toString());
       	if(msg.fields.routingKey == 'belt.magnet'){
-      	     console.log(" [x] disconnetto belt.magnet");
+      	     clearTimeout(timerId);
       	     if(msg.content!='true'){
       	     	sendAlert();
       	     }
       	     channel.unbindQueue(q.queue, exchange, key2);
-      	}else /*if(msg.content>1000)*/{
+      	     console.log(" [x] disconnetto belt.magnet");
+      	}else {
       	     console.log(" [x] connetto belt.magnet");
              channel.bindQueue(q.queue, exchange, key2);
-             setTimeout(function() {//
+             timerId = setTimeout(function() { //
 	         channel.unbindQueue(q.queue, exchange, key2);
 	         console.log(" [x] disconnetto belt.magnet");
 	     }, 6000);//
@@ -71,9 +72,5 @@ function sendAlert(){
     channel.publish(exchange, key, Buffer.from(msg));
   });
 
-  /*setTimeout(function() {
-    connection.close();
-    process.exit(0)
-  }, 500);*/
 });
 }
