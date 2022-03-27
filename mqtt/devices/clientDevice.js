@@ -15,16 +15,16 @@ const client = mqtt.connect('mqtt://' + IP, options)
 var subMagnet = true;
 let timerId;
 
-function publish(topic, msg) {
+function publish(topic, msg, options) {
     if (!client.connected) {
         client.on('connect', function() {
             console.log(" [x] connected " + client.connected);
-            client.publish(topic, msg, function() {
+            client.publish(topic, msg, options, function() {
                 console.log(" [x] Sent %s:'%s'", topic, msg);
             })
         })
     } else {
-        client.publish(topic, msg, function() {
+        client.publish(topic, msg, options, function() {
             console.log(" [x] Sent %s:'%s'", topic, msg);
         })
     }
@@ -88,5 +88,5 @@ client.on('message', function(topic, message) {
 function sendAlert() {
     console.log(' [x] alert');
     var msg = 'ALARM!!!!!!!: CONNECT BELT';
-    publish(topicAlarm, msg);
+    publish(topicAlarm, msg,{ qos: 2, retain: false });
 }
