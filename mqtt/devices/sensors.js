@@ -8,16 +8,16 @@ const options = {
     password: 'guest',
 }
 const client = mqtt.connect('mqtt://' + IP, options)
-function publish(topic, msg) {
+function publish(topic, msg, options) {
     if (!client.connected) {
             client.on('connect', function() {
                 console.log(" [x] connected " + client.connected);
-                client.publish(topic,msg, function() {
+                client.publish(topic,msg, options, function() {
                     console.log(" [x] Sent %s:'%s'", topic, msg);
                 })
             })
         } else {
-            client.publish(topic, msg,function() {
+            client.publish(topic, msg, options, function() {
                     console.log(" [x] Sent %s:'%s'", topic, msg);
             })
         }
@@ -30,9 +30,9 @@ function sensor(){
 	    var msg1 = (Math.floor(Math.random() * (max - min + 1) + min)).toString();
 	    var msg2 = (Boolean(Math.round(Math.random()))).toString();
 
-	    publish(topicWeight, msg1);
+	    publish(topicWeight, msg1,{ qos: 2, retain: false });
 	    setTimeout(function() {
-	       publish(topicMagnet, msg2);
+	       publish(topicMagnet, msg2,{ qos: 2, retain: false });
            }, 1000);
 	   setTimeout(sensor, 5000);
 }
