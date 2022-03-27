@@ -1,8 +1,8 @@
 ## Secure Child Car Seat
 Secure_Child_Car_Seat is a project that wants to show the potential of the IoT and the Serverless approach for make our lives easier, putting children's lives in safety.
 So in particualar the system alert with an SMS the parents when the child is on the seat, but the belt is not attached.<br/>
-This project is designed for building a computing architecture, based on open-source software, that exploit Function-as-service model in the context of IoT. The idea is provides a system which allows as in Amazon Aws or Microsoft Azure, and so on, to deploy functions that are trigged by events generated from small devices such as sensors and mobile (IoT devices), commonly these devices communicates using message-passing, in particular on dedicated protocols as AMQP or MQTT.
-In particulare in this case i decide to implement the projects qith two kind of implementations one use the message protocol AMPQ another one MQTT
+This project is designed for building a computing architecture, based on open-source software, that exploit Function-as-service model in the context of IoT. The idea is provides a system which allows as in Amazon Aws or Microsoft Azure, and so on, to deploy functions that are trigged by events generated from small devices such as sensors and mobile (IoT devices), commonly these devices communicates using message-passing, in particular on dedicated protocols as AMQP or MQTT.<br/>
+In particular, in this case i decide to develope the projects with two kind of implementations, one use the message protocol AMPQ another one MQTT
 ## Prerequisites
 * OS:
     * Ubuntu 18.04 LTS or more recent
